@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#16114a">
+  <title>AI 狼人殺</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='14' fill='%232a1f78'/%3E%3Cpath fill='%23ffc94a' d='M10 9l8 8h12l8-8v15c0 8-6 13-14 16-8-3-14-8-14-16Z'/%3E%3Cpath fill='%232a1f78' d='M16 25l5 2-5 1Zm16 0-5 2 5 1Z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="night">
+
+  <!-- ============================== icon + avatar sprite (static, referenced with <use>) -->
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6.5 6.5 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-wolf" viewBox="0 0 24 24"><path d="M4 3.5 8.5 8h7L20 3.5V12c0 4.4-3.4 7.7-8 9-4.6-1.3-8-4.6-8-9Z"/><path d="m8.3 12.3 2.3 1.1M15.7 12.3l-2.3 1.1M10.8 17l1.2.8 1.2-.8"/></symbol>
+    <symbol id="i-seer" viewBox="0 0 24 24"><circle cx="12" cy="10.5" r="7"/><path d="M8.6 17.6 7.5 21h9l-1.1-3.4"/><path d="M9 9a3.4 3.4 0 0 1 3-2.4"/></symbol>
+    <symbol id="i-potion" viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v5.2L5.6 17.4A2.4 2.4 0 0 0 7.7 21h8.6a2.4 2.4 0 0 0 2.1-3.6L13.5 8.2V3"/><path d="M7.4 14.5h9.2"/></symbol>
+    <symbol id="i-wheat" viewBox="0 0 24 24"><path d="M12 21.5V7.5"/><path d="M12 11.5c-2.6 0-4.3-1.6-4.3-4 2.6 0 4.3 1.6 4.3 4Zm0 0c2.6 0 4.3-1.6 4.3-4-2.6 0-4.3 1.6-4.3 4Zm0 5.5c-2.6 0-4.3-1.6-4.3-4 2.6 0 4.3 1.6 4.3 4Zm0 0c2.6 0 4.3-1.6 4.3-4-2.6 0-4.3 1.6-4.3 4Zm0-9.5c-1-1.2-1-2.8 0-4.5 1 1.7 1 3.3 0 4.5Z"/></symbol>
+    <symbol id="i-skull" viewBox="0 0 24 24"><path d="M12 3a7.5 7.5 0 0 0-7.5 7.5c0 2.5 1.2 4.4 3 5.6V19a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-2.9c1.8-1.2 3-3.1 3-5.6A7.5 7.5 0 0 0 12 3Z"/><circle cx="9" cy="11" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="11" r="1.7" fill="currentColor" stroke="none"/><path d="M10.5 20v-2.4M13.5 20v-2.4"/></symbol>
+    <symbol id="i-ballot" viewBox="0 0 24 24"><path d="M3.5 12.5h17V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1Z"/><path d="M7.5 12.5v-8a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v8"/><path d="m9.8 8 1.6 1.6 3-3.2M8 16.5h8"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10.5" rx="2.2"/><path d="M8 10.5v-3a4 4 0 0 1 8 0v3M12 14.5v2.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 11.5a8 8 0 0 1-11.7 7.1L4 20l1.4-4.4A8 8 0 1 1 20.5 11.5Z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></symbol>
+    <symbol id="i-candle" viewBox="0 0 24 24"><path d="M9.5 10.5h5V20a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1Z"/><path d="M12 2.5c1.6 1.8 2.2 3 2.2 4.1a2.2 2.2 0 0 1-4.4 0c0-1.1.6-2.3 2.2-4.1Z"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></symbol>
+    <symbol id="i-sunrise" viewBox="0 0 24 24"><path d="M12 3v4M5.1 8.6l1.5 1.5M18.9 8.6l-1.5 1.5M2.5 17h19M7 17a5 5 0 0 1 10 0M8 21h8"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4.5h11.5l-2.2 4 2.2 4H5"/></symbol>
+    <symbol id="i-mask" viewBox="0 0 24 24"><path d="M2.5 9.5C2.5 7.6 4 6.5 6 6.5c2.6 0 4 1.3 6 1.3s3.4-1.3 6-1.3c2 0 3.5 1.1 3.5 3 0 4.2-2.5 7.5-5.5 7.5-2.2 0-2.8-2.3-4-2.3s-1.8 2.3-4 2.3c-3 0-5.5-3.3-5.5-7.5Z"/><path d="M6.5 11H9M15 11h2.5"/></symbol>
+    <symbol id="i-thought" viewBox="0 0 24 24"><path d="M8 16.5a4.5 4.5 0 0 1-.7-8.9 5.5 5.5 0 0 1 10.3 1A3.9 3.9 0 0 1 17 16.5Z"/><circle cx="7" cy="20" r="1.3"/></symbol>
+    <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M6 2.5h12M6 21.5h12M7.5 2.5v3.2c0 1.6.8 3 2.1 3.9L12 12l2.4-2.4c1.3-.9 2.1-2.3 2.1-3.9V2.5M7.5 21.5v-3.2c0-1.6.8-3 2.1-3.9L12 12l2.4 2.4c1.3.9 2.1 2.3 2.1 3.9v3.2"/></symbol>
+    <symbol id="i-ghost" viewBox="0 0 24 24"><path d="M5 20.5V11a7 7 0 0 1 14 0v9.5l-2.4-1.8-2.3 1.8-2.3-1.8-2.3 1.8-2.3-1.8Z"/><circle cx="9.5" cy="11" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11" r="1.3" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-claw" viewBox="0 0 24 24"><path d="M5.5 3.5c3 4.5 3 11.5-1 17M11 2.5c3 5 3 13-1 19M16.5 3.5c3 4.5 3 11.5-1 17"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.5-7.5-10.3A4.2 4.2 0 0 1 12 7.7a4.2 4.2 0 0 1 7.5 2.5C19.5 16 12 20.5 12 20.5Z"/><path d="M12 10.8v5M9.5 13.3h5"/></symbol>
+    <symbol id="i-poison" viewBox="0 0 24 24"><path d="M10 2.5h4M10.5 2.5v3.3L6.8 9.6A3 3 0 0 0 6 11.7V19a2.5 2.5 0 0 0 2.5 2.5h7A2.5 2.5 0 0 0 18 19v-7.3a3 3 0 0 0-.8-2.1l-3.7-3.8V2.5"/><path d="m10 13.5 4 4M14 13.5l-4 4"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.1.8 3.5 2.8 3.5 5.6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.5 19.5 5.5v6c0 4.8-3.2 8.5-7.5 10-4.3-1.5-7.5-5.2-7.5-10v-6Z"/></symbol>
+    <symbol id="i-shield-broken" viewBox="0 0 24 24"><path d="M12 2.5 19.5 5.5v6c0 4.8-3.2 8.5-7.5 10-4.3-1.5-7.5-5.2-7.5-10v-6Z"/><path d="m12 2.5-1.6 5.2 3 3-2.6 4 1.2 6.8"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-1.8 10.5H4.8Z"/><path d="M5 21.5h14"/></symbol>
+    <symbol id="i-scales" viewBox="0 0 24 24"><path d="M12 3v18M7.5 21h9M5 7h14M12 3l-1 1h2Z"/><path d="m5 7-3 6.5a3 3 0 0 0 6 0Zm14 0-3 6.5a3 3 0 0 0 6 0Z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.5v5h5"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 11 12 3.5l8.5 7.5"/><path d="M5.5 9.5v11h13v-11M10 20.5v-5h4v5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 18.5V5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H20v-5"/></symbol>
+    <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+    <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="m2 2 20 20M8.5 16.4a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 5.2-2.7M19 12.9a10 10 0 0 0-2.4-1.7M2 9.3a15 15 0 0 1 4.3-2.6M22 9.3a15 15 0 0 0-11.5-4.2"/><circle cx="12" cy="20" r="1.2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21.5 2.5 10.5 13.5"/><path d="M21.5 2.5 15 21.5l-4.5-8-8-4.5Z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"/></symbol>
+    <symbol id="i-gavel" viewBox="0 0 24 24"><path d="m14.5 3.5 6 6M12.5 5.5l6 6M13.5 4.5l-5 5 6 6 5-5M11.5 12.5 3.5 20.5M12.5 21h8"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 6.5v11M12 3.5v17M16 6.5v11M20 10v4"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></symbol>
+    <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="7.5" width="16" height="12.5" rx="3"/><path d="M12 7.5V4.5M9 13v.5M15 13v.5M9.5 16.8h5"/><circle cx="12" cy="3.5" r="1"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7Z"/><path d="M19 16.5v4M17 18.5h4"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12Z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6h.01"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4.5M12 17h.01"/></symbol>
+
+    <!-- avatar: hooded figure (hood tinted per seat via currentColor) + 8 mask variants -->
+    <symbol id="av-hood" viewBox="0 0 48 48">
+      <path fill="currentColor" d="M24 4.5C16.5 7.5 11 13.5 11 23.5l-.4 8.3C9.2 35.8 5.5 39 2 42.5V48h44v-5.5c-3.5-3.5-7.2-6.7-8.6-10.7l-.4-8.3C37 13.5 31.5 7.5 24 4.5Z"/>
+      <path fill="#fff" fill-opacity=".2" d="M24 12.6c-6.4 0-10.2 6-10.2 13.3 0 6.7 4.4 11.6 10.2 12.8 5.8-1.2 10.2-6.1 10.2-12.8 0-7.3-3.8-13.3-10.2-13.3Z"/>
+      <path fill="#0d0a22" d="M24 15c-5.2 0-7.9 5-7.9 11 0 5.6 3.5 9.6 7.9 10.5 4.4-.9 7.9-4.9 7.9-10.5 0-6-2.7-11-7.9-11Z"/>
+      <path fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1.4" d="M24 38.7V48"/>
+      <path fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.3" stroke-linecap="round" d="M22.6 6.6c-3.4 2.4-5.6 5.2-6.6 8.4"/>
+    </symbol>
+    <symbol id="av-m1" viewBox="0 0 48 48"><circle cx="20.6" cy="26.4" r="2" fill="currentColor"/><circle cx="27.4" cy="26.4" r="2" fill="currentColor"/><circle cx="24" cy="42.4" r="2.1" fill="currentColor"/></symbol>
+    <symbol id="av-m2" viewBox="0 0 48 48"><path fill="currentColor" d="m17.6 24.9 5.2 2.2-4.8 1Zm12.8 0-5.2 2.2 4.8 1ZM24 39.9l2.3 2.3-2.3 2.3-2.3-2.3Z"/></symbol>
+    <symbol id="av-m3" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M18.5 27.4q2-2.9 4 0M25.5 27.4q2-2.9 4 0"/><circle cx="24" cy="10.6" r="1.8" fill="currentColor"/></symbol>
+    <symbol id="av-m4" viewBox="0 0 48 48"><rect x="17.8" y="25" width="12.4" height="2.6" rx="1.3" fill="currentColor"/><circle cx="20.6" cy="42.4" r="1.6" fill="currentColor"/><circle cx="27.4" cy="42.4" r="1.6" fill="currentColor"/></symbol>
+    <symbol id="av-m5" viewBox="0 0 48 48"><circle cx="20.3" cy="26.2" r="2.8" fill="currentColor"/><circle cx="27.7" cy="26.2" r="2.8" fill="currentColor"/><circle cx="20.9" cy="26.7" r="1.2" fill="#0d0a22"/><circle cx="28.3" cy="26.7" r="1.2" fill="#0d0a22"/><path fill="currentColor" d="M24 39.6c.4 1.6 1 2.2 2.6 2.6-1.6.4-2.2 1-2.6 2.6-.4-1.6-1-2.2-2.6-2.6 1.6-.4 2.2-1 2.6-2.6Z"/></symbol>
+    <symbol id="av-m6" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M18.6 26.6h3.9M25.5 26.6h3.9"/><circle cx="24" cy="4.4" r="2.2" fill="currentColor"/></symbol>
+    <symbol id="av-m7" viewBox="0 0 48 48"><circle cx="20.6" cy="26.4" r="2" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M25.5 27.4q2-2.9 4 0M15.5 38.2c2.6 1.8 5.6 2.8 8.5 2.8s5.9-1 8.5-2.8"/></symbol>
+    <symbol id="av-m8" viewBox="0 0 48 48"><path fill="currentColor" d="M18.6 24.9h4.1l-2 3.4Zm6.7 0h4.1l-2 3.4ZM26 40.2a3 3 0 1 1-3.3-.5 2.4 2.4 0 0 0 3.3.5Z"/></symbol>
+  </svg>
+
+  <div class="sky" aria-hidden="true">
+    <div class="sky-day"></div>
+    <div class="sky-night"><div class="stars"></div><div class="stars stars-2"></div></div>
+  </div>
+
+  <div id="conn-banner" class="conn-banner" role="status" hidden>
+    <svg class="i" aria-hidden="true" focusable="false"><use href="#i-wifi-off"/></svg>
+    <span>連線中斷，正在重新連線…</span>
+  </div>
+
+  <!-- ============================== start screen -->
+  <section id="screen-start" class="screen screen-start">
+    <div class="start-wrap">
+      <header class="start-hero">
+        <div class="hero-moon" aria-hidden="true"></div>
+        <p class="eyebrow"><span>WHO IS HUMAN</span></p>
+        <h1 class="start-title">AI 狼人殺</h1>
+        <p class="tagline"><span>六位玩家圍坐一桌，</span><span>其中五位是 AI——只有你是真人。</span></p>
+        <div id="hero-lineup" class="hero-lineup" aria-hidden="true"></div>
+        <div class="start-actions">
+          <button id="btn-new" class="btn primary big" type="button">
+            <svg class="i" aria-hidden="true" focusable="false"><use href="#i-play"/></svg>
+            <span class="btn-label">開始新遊戲</span>
+          </button>
+          <button id="btn-resume" class="btn ghost big" type="button" hidden>
+            <svg class="i" aria-hidden="true" focusable="false"><use href="#i-rotate"/></svg>
+            <span class="btn-label">繼續上一局</span>
+          </button>
+        </div>
+        <form id="key-form" class="key-form" hidden>
+          <label for="key-input"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-lock"/></svg>需要密碼才能玩</label>
+          <div class="key-row">
+            <input id="key-input" type="password" autocomplete="current-password" placeholder="輸入密碼" required>
+            <button class="btn primary" type="submit">連線</button>
+          </div>
+        </form>
+        <p id="start-hint" class="start-hint" aria-live="polite"></p>
+      </header>
+
+      <div class="goal-ribbon">
+        <span class="goal-icon" aria-hidden="true"><svg class="i"><use href="#i-target"/></svg></span>
+        <p><b>你的目標：讓你的陣營獲勝。</b><span>身份開局才揭曉——好人要找出狼人，狼人要藏好自己。</span></p>
+      </div>
+
+      <div class="rule-tiles">
+        <section class="tile">
+          <h2><svg class="i" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>6 人局</h2>
+          <ul class="board">
+            <li class="wolf"><span class="r-ico"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-wolf"/></svg></span><b>狼人</b><span class="cnt">2 人</span></li>
+            <li><span class="r-ico"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-seer"/></svg></span><b>預言家</b><span class="cnt">1 人</span></li>
+            <li><span class="r-ico"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-potion"/></svg></span><b>女巫</b><span class="cnt">1 人</span></li>
+            <li><span class="r-ico"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-wheat"/></svg></span><b>村民</b><span class="cnt">2 人</span></li>
+          </ul>
+          <p class="tile-note">座位與身份隨機分配。</p>
+        </section>
+        <section class="tile">
+          <h2><svg class="i" aria-hidden="true" focusable="false"><use href="#i-flag"/></svg>屠邊規則</h2>
+          <dl class="wins">
+            <div class="win-row wolf"><dt>狼人勝</dt><dd>殺光所有神職（預言家＋女巫）<b>或</b>殺光所有村民</dd></div>
+            <div class="win-row good"><dt>好人勝</dt><dd>放逐所有狼人</dd></div>
+          </dl>
+        </section>
+        <section class="tile">
+          <h2><svg class="i" aria-hidden="true" focusable="false"><use href="#i-hourglass"/></svg>流程</h2>
+          <ol class="flow">
+            <li class="flow-night"><span class="f-ico"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg></span><div><b>夜晚</b><span>狼人擊殺、預言家查驗、女巫用藥</span></div></li>
+            <li class="flow-day"><span class="f-ico"><svg class="i" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg></span><div><b>白天</b><span>依座位順序發言，再投票放逐一人</span></div></li>
+          </ol>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== game screen -->
+  <section id="screen-game" class="screen screen-game" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg class="i"><use href="#i-wolf"/></svg></span>
+        <span class="brand-name">AI 狼人殺</span>
+      </div>
+      <div id="phase-badge" class="phase-badge" role="status">準備中</div>
+      <div class="hud">
+        <div id="hud-alive" class="hud-pill" hidden></div>
+        <div id="conn-dot" class="conn-dot" title="連線狀態" role="img" aria-label="連線狀態"></div>
+      </div>
+    </header>
+
+    <div class="game-layout">
+      <aside class="side" aria-label="玩家資訊">
+        <div id="you-card" class="you-card"></div>
+        <div class="seats-head" aria-hidden="true"><svg class="i"><use href="#i-users"/></svg><span>玩家</span></div>
+        <div id="seats" class="seats" role="group" aria-label="座位"></div>
+        <details class="side-rules" open>
+          <summary><svg class="i" aria-hidden="true" focusable="false"><use href="#i-book"/></svg>規則速查</summary>
+          <ul>
+            <li>屠邊：神職全滅或村民全滅 → 狼人勝；狼人全滅 → 好人勝。</li>
+            <li>女巫不能自救，同一晚不能同時使用兩瓶藥。</li>
+            <li>放逐投票平票或全員棄票 → 無人出局。</li>
+            <li>第一夜死者與被放逐者有遺言。</li>
+          </ul>
+        </details>
+      </aside>
+
+      <main class="main">
+        <div class="log-wrap">
+          <div id="log" class="log" aria-live="polite"></div>
+          <button id="jump-new" class="jump-new" type="button" hidden>
+            <svg class="i" aria-hidden="true" focusable="false"><use href="#i-arrow-down"/></svg>有新訊息
+          </button>
+          <div id="phase-splash" class="phase-splash" aria-hidden="true"></div>
+        </div>
+        <div id="status" class="status" hidden>
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span id="status-text"></span>
+        </div>
+        <div id="action" class="action"></div>
+      </main>
+    </div>
+  </section>
+
+  <!-- ============================== end screen -->
+  <section id="screen-end" class="screen screen-end" hidden>
+    <div class="end-wrap">
+      <div id="result-hero" class="result-hero"></div>
+
+      <section class="card">
+        <h2><svg class="i" aria-hidden="true" focusable="false"><use href="#i-mask"/></svg>身份揭曉</h2>
+        <div id="roles-grid" class="roles-grid"></div>
+      </section>
+
+      <details id="review" class="card review">
+        <summary>
+          <span class="sum-icon" aria-hidden="true"><svg class="i"><use href="#i-eye"/></svg></span>
+          <h2>上帝視角復盤</h2>
+          <span class="summary-hint">看看每個人的真實身份與想法</span>
+          <svg class="i chev" aria-hidden="true" focusable="false"><use href="#i-chevron"/></svg>
+        </summary>
+        <label class="switch">
+          <input id="toggle-thoughts" type="checkbox" checked>
+          <span>顯示 AI 內心想法</span>
+        </label>
+        <div id="timeline" class="timeline"></div>
+      </details>
+
+      <div class="end-actions">
+        <button id="btn-again" class="btn primary big" type="button">
+          <svg class="i" aria-hidden="true" focusable="false"><use href="#i-rotate"/></svg>
+          <span class="btn-label">再來一局</span>
+        </button>
+        <button id="btn-home" class="btn ghost big" type="button">
+          <svg class="i" aria-hidden="true" focusable="false"><use href="#i-home"/></svg>
+          <span class="btn-label">回首頁</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div id="toasts" class="toasts" aria-live="assertive"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

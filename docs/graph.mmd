@@ -1,0 +1,21 @@
+flowchart TD
+    START([START]) --> setup --> night_start
+    night_start -->|2 wolves alive: wolf chat| speech_turn
+    night_start -->|1 wolf left| wolf_pick
+    speech_turn -->|next speaker| speech_turn
+    speech_turn -->|wolf chat over| wolf_pick
+    wolf_pick --> wolf_kill --> witch --> seer --> dawn
+    dawn -->|a team has won| game_over
+    dawn -->|someone died on the first night: last words| speech_turn
+    dawn -->|otherwise| day_start
+    speech_turn -->|first-night last words over| day_start
+    day_start --> speech_turn
+    speech_turn -->|day speeches over| cast_vote
+    cast_vote --> count_votes
+    count_votes -->|someone voted out: last words| speech_turn
+    count_votes -->|nobody out| night_start
+    count_votes -->|day limit reached| game_over
+    speech_turn -->|last words over| after_exile
+    after_exile -->|a team has won| game_over
+    after_exile -->|otherwise| night_start
+    game_over --> END([END])
